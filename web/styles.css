@@ -110,4 +110,7 @@ html,body{overflow-x:hidden}
   .hero-actions{display:flex;gap:10px;flex-wrap:wrap}
   .table-head,.rank-row{min-width:600px}
   .pager{flex-wrap:wrap}
+  /* notched phones: keep the fixed bottom nav out of the home-indicator area */
+  .bottom-nav{height:calc(72px + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px)}
+  .page-view{padding-bottom:calc(95px + env(safe-area-inset-bottom,0px))}
 }
