@@ -688,6 +688,24 @@ function bindEvents() {
   document.getElementById('scrim').addEventListener('click', closeDrawer);
   document.getElementById('refreshBtn').addEventListener('click', () => refreshData(true));
   document.getElementById('themeBtn').addEventListener('click', toggleTheme);
+  const navMenu = document.getElementById('navMenu');
+  const navToggle = document.getElementById('navToggle');
+  if (navMenu && navToggle) {
+    const setNav = (open) => {
+      navMenu.classList.toggle('open', open);
+      navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    };
+    navToggle.addEventListener('click', (event) => {
+      event.stopPropagation();
+      setNav(!navMenu.classList.contains('open'));
+    });
+    document.querySelectorAll('.nav-dropdown-item').forEach((item) => {
+      item.addEventListener('click', () => setNav(false));
+    });
+    document.addEventListener('click', (event) => {
+      if (!navMenu.contains(event.target)) setNav(false);
+    });
+  }
   document.getElementById('prevPageBtn').addEventListener('click', () => {
     state.page -= 1;
     renderCatalog();

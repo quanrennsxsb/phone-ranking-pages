@@ -91,11 +91,16 @@
 html,body{overflow-x:hidden}
 .search-box{min-width:0}
 
-/* Desktop top navigation. On phones it is hidden and the fixed .bottom-nav is used. */
-.top-nav{display:flex;align-items:center;gap:2px;white-space:nowrap}
-.top-nav-item{border:0;background:none;color:var(--muted);font:inherit;font-size:13px;padding:8px 11px;border-radius:8px;cursor:pointer}
-.top-nav-item:hover{color:var(--text);background:var(--surface-2)}
-.top-nav-item.active{color:var(--accent);background:#22313a}
+/* Desktop: the view switcher collapses into one toggle at the right edge.
+   Phones hide it entirely and use the fixed .bottom-nav instead. */
+.nav-menu{position:relative;display:flex;align-items:center}
+.nav-toggle{width:38px;height:38px;border-radius:9px;border:1px solid var(--line);color:var(--text);font-size:17px;line-height:1;display:grid;place-items:center}
+.nav-toggle:hover,.nav-menu.open .nav-toggle{border-color:var(--accent);color:var(--accent)}
+.nav-dropdown{position:absolute;top:calc(100% + 10px);right:0;min-width:176px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px;display:none;flex-direction:column;gap:2px;box-shadow:0 16px 40px rgba(0,0,0,.45);z-index:40}
+.nav-menu.open .nav-dropdown{display:flex}
+.nav-dropdown-item{border:0;background:none;color:var(--muted);font:inherit;font-size:14px;text-align:left;padding:11px 12px;border-radius:7px;cursor:pointer;white-space:nowrap}
+.nav-dropdown-item:hover{background:var(--surface-2);color:var(--text)}
+.nav-dropdown-item.active{background:#22313a;color:var(--accent)}
 
 /* Ranking table scrolls horizontally instead of overflowing the page. */
 .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
@@ -105,7 +110,7 @@ html,body{overflow-x:hidden}
 @media (max-width:1200px){.top-meta{display:none}}
 
 @media (max-width:900px){
-  .top-nav{display:none}
+  .nav-menu{display:none}
   .hero-strip{flex-direction:column;align-items:flex-start;gap:14px}
   .hero-actions{display:flex;gap:10px;flex-wrap:wrap}
   .table-head,.rank-row{min-width:600px}

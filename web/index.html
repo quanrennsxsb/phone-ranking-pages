@@ -4,23 +4,26 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>性能排行 · 手机资料库</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=20261016b">
 </head>
 <body>
   <div class="app-shell">
     <header class="topbar">
       <button class="icon-btn menu-btn" id="menuBtn" aria-label="打开导航"><span></span><span></span><span></span></button>
       <div class="brand-mark"><span class="brand-dot"></span><span>性能排行</span></div>
-      <nav class="top-nav" id="topNav">
-        <button class="top-nav-item active" data-view="updates">更新</button>
-        <button class="top-nav-item" data-view="catalog">机型库</button>
-        <button class="top-nav-item" data-view="rankings">处理器</button>
-        <button class="top-nav-item" data-view="brands">品牌</button>
-      </nav>
       <label class="search-box"><span class="search-icon">⌕</span><input id="searchInput" placeholder="搜索机型、品牌或处理器"><kbd>/</kbd></label>
       <button class="icon-btn search-btn" id="searchBtn" aria-label="搜索">⌕</button>
       <div class="top-meta"><span class="live-dot"></span><span id="syncMeta">数据同步中…</span></div>
       <button class="icon-btn theme-btn" id="themeBtn" aria-label="切换深浅色">☀</button>
+      <div class="nav-menu" id="navMenu">
+        <button class="icon-btn nav-toggle" id="navToggle" aria-label="菜单" aria-expanded="false">☰</button>
+        <div class="nav-dropdown" id="navDropdown" role="menu">
+          <button class="nav-dropdown-item active" data-view="updates" role="menuitem">更新动态</button>
+          <button class="nav-dropdown-item" data-view="catalog" role="menuitem">机型库</button>
+          <button class="nav-dropdown-item" data-view="rankings" role="menuitem">处理器排行</button>
+          <button class="nav-dropdown-item" data-view="brands" role="menuitem">手机品牌</button>
+        </div>
+      </div>
     </header>
 
     <aside class="drawer" id="drawer">
@@ -104,6 +107,6 @@
       <button class="bottom-item" data-view="brands"><span>◈</span><small>品牌</small></button>
     </nav>
   </div>
-  <script src="app.js"></script>
+  <script src="app.js?v=20261016b"></script>
 </body>
 </html>
