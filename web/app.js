@@ -1,4 +1,4 @@
-const FALLBACK_IMAGE = 'assets/device-hero.jpg';
+const FALLBACK_IMAGE = 'assets/no-image.png';
 const CONTROL_API = 'http://127.0.0.1:4174';
 const THEME_KEY = 'socmark-theme';
 
