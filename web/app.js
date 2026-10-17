@@ -1,6 +1,24 @@
 const FALLBACK_IMAGE = 'assets/no-image.png';
 const CONTROL_API = 'http://127.0.0.1:4174';
 const THEME_KEY = 'socmark-theme';
+const FAVORITES_KEY = 'socmark-favorites';
+
+function readFavorites() {
+  try {
+    const value = JSON.parse(localStorage.getItem(FAVORITES_KEY) || '[]');
+    return [...new Set(Array.isArray(value) ? value.map(Number).filter(Number.isInteger) : [])];
+  } catch (error) {
+    return [];
+  }
+}
+
+function writeFavorites() {
+  try {
+    localStorage.setItem(FAVORITES_KEY, JSON.stringify(state.favorites));
+  } catch (error) {
+    showToast('浏览器无法保存收藏');
+  }
+}
 
 const rawFieldLabels = {
   id: '记录 ID', phonename: '机型', company: '品牌', socname: '处理器型号', cpu: '处理器规格',
@@ -105,6 +123,7 @@ const state = {
   brands: [],
   images: {},
   imageSources: {},
+  favorites: readFavorites(),
   catalog: null,
   catalogPromise: null,
   query: '',
@@ -115,12 +134,14 @@ const state = {
 
 const views = {
   updates: document.getElementById('updatesView'),
+  favorites: document.getElementById('favoritesView'),
   catalog: document.getElementById('catalogView'),
   brands: document.getElementById('brandsView'),
   rankings: document.getElementById('rankingsView'),
   detail: document.getElementById('detailView'),
 };
 const phoneList = document.getElementById('updatesList');
+const favoritesList = document.getElementById('favoritesList');
 const catalogList = document.getElementById('catalogList');
 
 function escapeHtml(value) {
@@ -212,6 +233,42 @@ function bindCards(container) {
       }
     });
   });
+}
+
+function isFavorite(id) {
+  return state.favorites.includes(Number(id));
+}
+
+function favoriteButtonHtml(id) {
+  const active = isFavorite(id);
+  return `<button class="ghost-btn favorite-btn" data-hero-action="favorite"
+    aria-pressed="${active}">${active ? '♥ 已收藏' : '♡ 加入收藏'}</button>`;
+}
+
+function renderFavorites() {
+  const rows = state.favorites
+    .map((id) => state.index.find((item) => Number(item.id) === id))
+    .filter(Boolean);
+  document.getElementById('favoritesCount').textContent = rows.length;
+  favoritesList.innerHTML = rows.length
+    ? rows.map((item) => cardHtml(item)).join('')
+    : '<p class="empty-hint">还没有收藏机型。打开任意机型详情，点击“加入收藏”。</p>';
+  bindCards(favoritesList);
+}
+
+function toggleFavorite(id) {
+  const key = Number(id);
+  const index = state.favorites.indexOf(key);
+  if (index >= 0) {
+    state.favorites.splice(index, 1);
+    showToast('已取消收藏');
+  } else {
+    state.favorites.unshift(key);
+    showToast('已加入收藏');
+  }
+  writeFavorites();
+  renderFavorites();
+  return isFavorite(key);
 }
 
 function renderUpdates() {
@@ -465,7 +522,7 @@ async function renderDetail(id) {
           <div><b>${escapeHtml(screen.split(' 像素')[0])}</b><span>屏幕</span></div>
         </div>
         <div class="hero-actions">
-          <button class="ghost-btn" data-hero-action="favorite">☆ 加入收藏</button>
+          ${favoriteButtonHtml(item.id)}
           <button class="ghost-btn" data-hero-action="compare">＋ 加入对比</button>
           <button class="ghost-btn" data-hero-action="enter-compare">⇄ 进入对比</button>
         </div>
@@ -486,7 +543,15 @@ async function renderDetail(id) {
     </div>`;
   document.getElementById('detailBackBtn').addEventListener('click', () => history.back());
   views.detail.querySelectorAll('[data-hero-action]').forEach((button) => {
-    button.addEventListener('click', () => showToast('该功能与 App 保持一致，稍后开放'));
+    button.addEventListener('click', () => {
+      if (button.dataset.heroAction === 'favorite') {
+        const active = toggleFavorite(item.id);
+        button.setAttribute('aria-pressed', String(active));
+        button.textContent = active ? '♥ 已收藏' : '♡ 加入收藏';
+        return;
+      }
+      showToast('该功能与 App 保持一致，稍后开放');
+    });
   });
 }
 
@@ -497,7 +562,7 @@ function showView(name, {replace = false, detailId = null} = {}) {
     button.classList.toggle('active', button.dataset.view === name);
   });
   window.scrollTo({top: 0});
-  closeDrawer();
+  if (name === 'favorites') renderFavorites();
   const route = name === 'detail' && detailId !== null ? `#detail-${detailId}` : `#${name}`;
   if (replace) history.replaceState(null, '', route);
   else history.pushState(null, '', route);
@@ -506,11 +571,6 @@ function showView(name, {replace = false, detailId = null} = {}) {
 async function openDetail(id) {
   await renderDetail(id);
   showView('detail', {detailId: id});
-}
-
-function closeDrawer() {
-  document.getElementById('drawer').classList.remove('open');
-  document.getElementById('scrim').classList.remove('open');
 }
 
 let toastTimer = null;
@@ -532,7 +592,8 @@ function updateSyncMeta() {
   if (!state.meta) return;
   const stamp = state.meta.syncedAtText || '';
   document.getElementById('syncMeta').textContent = `数据更新于 ${stamp.slice(5, 16)}`;
-  document.getElementById('drawerSync').textContent =
+  const drawerSync = document.getElementById('drawerSync');
+  if (drawerSync) drawerSync.textContent =
     `已同步 ${state.meta.catalogCount} 款机型 · ${stamp}`;
   const panel = document.getElementById('syncStatus');
   if (panel) {
@@ -566,6 +627,7 @@ async function loadData() {
   state.catalogPromise = null;
   updateSyncMeta();
   renderUpdates();
+  renderFavorites();
   renderCatalog({reset: true});
   renderBrands();
   renderRankings();
@@ -688,12 +750,6 @@ function bindEvents() {
   document.querySelectorAll('[data-view]').forEach((button) => {
     button.addEventListener('click', () => showView(button.dataset.view));
   });
-  document.getElementById('menuBtn').addEventListener('click', () => {
-    document.getElementById('drawer').classList.add('open');
-    document.getElementById('scrim').classList.add('open');
-  });
-  document.getElementById('closeDrawer').addEventListener('click', closeDrawer);
-  document.getElementById('scrim').addEventListener('click', closeDrawer);
   document.getElementById('refreshBtn').addEventListener('click', () => refreshData(true));
   document.getElementById('themeBtn').addEventListener('click', toggleTheme);
   const navMenu = document.getElementById('navMenu');
@@ -760,6 +816,11 @@ function bindEvents() {
   });
   window.addEventListener('popstate', () => applyRoute({replace: true}));
   window.addEventListener('hashchange', () => applyRoute({replace: true}));
+  window.addEventListener('storage', (event) => {
+    if (event.key !== FAVORITES_KEY) return;
+    state.favorites = readFavorites();
+    renderFavorites();
+  });
 }
 
 function submitSearch(value) {

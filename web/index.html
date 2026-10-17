@@ -4,21 +4,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>性能排行 · 手机资料库</title>
-  <link rel="stylesheet" href="styles.css?v=20261017a">
+  <link rel="stylesheet" href="styles.css?v=20261017b">
 </head>
 <body>
   <div class="app-shell">
     <header class="topbar">
-      <button class="icon-btn menu-btn" id="menuBtn" aria-label="打开导航"><span></span><span></span><span></span></button>
       <div class="brand-mark"><span class="brand-dot"></span><span>性能排行</span></div>
-      <label class="search-box"><span class="search-icon">⌕</span><input id="searchInput" placeholder="搜索机型、品牌或处理器"><kbd>/</kbd></label>
+      <label class="search-box"><span class="search-icon">⌕</span><input id="searchInput" placeholder="搜索机型、品牌、处理器"><kbd>/</kbd></label>
       <button class="icon-btn search-btn" id="searchBtn" aria-label="搜索">⌕</button>
       <div class="top-meta"><span class="live-dot"></span><span id="syncMeta">数据同步中…</span></div>
       <div class="nav-menu" id="navMenu">
         <button class="icon-btn nav-toggle" id="navToggle" aria-label="菜单" aria-expanded="false">☰</button>
         <div class="nav-dropdown" id="navDropdown" role="menu">
           <button class="nav-dropdown-item active" data-view="updates" role="menuitem">更新动态</button>
-          <button class="nav-dropdown-item" data-view="catalog" role="menuitem">机型库</button>
+          <button class="nav-dropdown-item" data-view="favorites" role="menuitem">我的收藏</button>
           <button class="nav-dropdown-item" data-view="rankings" role="menuitem">处理器排行</button>
           <button class="nav-dropdown-item" data-view="brands" role="menuitem">手机品牌</button>
         </div>
@@ -26,18 +25,6 @@
       <button class="icon-btn theme-btn" id="themeBtn" aria-label="切换深浅色">☀</button>
     </header>
 
-    <aside class="drawer" id="drawer">
-      <div class="drawer-head"><div class="brand-mark"><span class="brand-dot"></span><span>性能排行</span></div><button class="icon-btn" id="closeDrawer">×</button></div>
-      <div class="profile"><div class="avatar">访</div><div><strong>本地镜像</strong><small>离线浏览 · 数据来自官方接口</small></div></div>
-      <nav class="drawer-nav">
-        <button class="drawer-item active" data-view="updates"><span>◴</span>更新动态</button>
-        <button class="drawer-item" data-view="catalog"><span>▦</span>机型库</button>
-        <button class="drawer-item" data-view="brands"><span>◈</span>手机品牌</button>
-        <button class="drawer-item" data-view="rankings"><span>▤</span>处理器排行</button>
-      </nav>
-      <div class="drawer-foot"><span class="status-dot"></span><span id="drawerSync">同步状态读取中</span></div>
-    </aside>
-    <div class="scrim" id="scrim"></div>
     <aside class="settings-panel" id="settingsPanel">
       <h3>同步设置</h3>
       <p class="settings-status" id="syncStatus">同步状态读取中…</p>
@@ -62,10 +49,17 @@
         <div class="phone-list" id="updatesList"></div>
       </section>
 
+      <section class="page-view" id="favoritesView">
+        <div class="hero-strip compact">
+          <div><span class="eyebrow">SAVED DEVICES</span><h1>我的收藏</h1><p>共 <b id="favoritesCount">0</b> 款机型 · 仅保存在当前浏览器。</p></div>
+        </div>
+        <div class="phone-list" id="favoritesList"></div>
+      </section>
+
       <section class="page-view" id="catalogView">
         <div class="hero-strip compact">
-          <div><span class="eyebrow">DEVICE LIBRARY</span><h1>机型库</h1><p>共 <b id="catalogCount">0</b> 款机型，点击查看完整参数。</p></div>
-          <label class="search-box catalog-search"><span class="search-icon">⌕</span><input id="catalogSearch" placeholder="按机型 / 品牌 / 处理器筛选"></label>
+          <div><span class="eyebrow">SEARCH RESULTS</span><h1>搜索结果</h1><p>共 <b id="catalogCount">0</b> 款机型，点击查看完整参数。</p></div>
+          <label class="search-box catalog-search"><span class="search-icon">⌕</span><input id="catalogSearch" placeholder="在当前结果中筛选"></label>
         </div>
         <div class="catalog-toolbar">
           <span class="search-hint" id="catalogHint">支持「苹果14」「红米 K100」这类写法</span>
@@ -100,13 +94,7 @@
       <section class="page-view detail-view" id="detailView" aria-live="polite"></section>
     </main>
 
-    <nav class="bottom-nav">
-      <button class="bottom-item active" data-view="updates"><span>◴</span><small>更新</small></button>
-      <button class="bottom-item" data-view="catalog"><span>▦</span><small>机型库</small></button>
-      <button class="bottom-item" data-view="rankings"><span>▤</span><small>处理器</small></button>
-      <button class="bottom-item" data-view="brands"><span>◈</span><small>品牌</small></button>
-    </nav>
   </div>
-  <script src="app.js?v=20261017b"></script>
+  <script src="app.js?v=20261017c"></script>
 </body>
 </html>
