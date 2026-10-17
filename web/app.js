@@ -104,6 +104,7 @@ const state = {
   updates: [],
   brands: [],
   images: {},
+  imageSources: {},
   catalog: null,
   catalogPromise: null,
   query: '',
@@ -169,7 +170,11 @@ function isRecent(value) {
 function cardImage(item) {
   // Cached copies are produced by the image grabber (they use the app's own
   // signed requests); remote URLs are session-bound and fail in a browser.
-  if (state.images[String(item.id)]) return `data/images/${item.id}.jpg`;
+  const key = String(item.id);
+  if (state.images[key]) {
+    const digest = state.imageSources[key]?.sha256;
+    return `data/images/${item.id}.jpg${digest ? `?v=${digest.slice(0, 12)}` : ''}`;
+  }
   return FALLBACK_IMAGE;
 }
 
@@ -538,13 +543,15 @@ function updateSyncMeta() {
 
 async function loadData() {
   const bust = Date.now();
-  const [meta, index, updates, images, brands] = await Promise.all([
+  const [meta, index, updates, images, imageSources, brands] = await Promise.all([
     fetch(`data/meta.json?v=${bust}`, {cache: 'no-store'}).then((r) => r.json()).catch(() => null),
     fetch(`data/index.json?v=${bust}`, {cache: 'no-store'}).then((r) => r.json())
       .catch(() => ({items: []})),
     fetch(`data/updates.json?v=${bust}`, {cache: 'no-store'}).then((r) => r.json())
       .catch(() => ({items: []})),
     fetch(`data/images.json?v=${bust}`, {cache: 'no-store'}).then((r) => r.json())
+      .catch(() => ({})),
+    fetch(`data/image-sources.json?v=${bust}`, {cache: 'no-store'}).then((r) => r.json())
       .catch(() => ({})),
     fetch(`data/brands.json?v=${bust}`, {cache: 'no-store'}).then((r) => r.json())
       .catch(() => ({items: []})),
@@ -554,6 +561,7 @@ async function loadData() {
   state.updates = updates.items || [];
   state.brands = brands.items || [];
   state.images = images && typeof images === 'object' ? images : {};
+  state.imageSources = imageSources && typeof imageSources === 'object' ? imageSources : {};
   state.catalog = null;
   state.catalogPromise = null;
   updateSyncMeta();
