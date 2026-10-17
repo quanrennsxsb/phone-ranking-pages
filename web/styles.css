@@ -119,3 +119,19 @@ html,body{overflow-x:hidden}
   .bottom-nav{height:calc(72px + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px)}
   .page-view{padding-bottom:calc(95px + env(safe-area-inset-bottom,0px))}
 }
+
+/* --- light theme corrections for hard-coded colours --- */
+[data-theme="light"] .phone-card p span{color:#3d474b}
+[data-theme="light"] .chevron{color:#9aa5a9}
+[data-theme="light"] .nav-dropdown-item.active{background:#e3f0f3;color:var(--accent)}
+[data-theme="light"] .drawer-item.active,[data-theme="light"] .drawer-item:hover{background:#eef3f5}
+[data-theme="light"] .phone-card:hover{background:#eef1f3}
+[data-theme="light"] .brand-symbol{background:#e4e9ec}
+[data-theme="light"] .detail-section{border-top-color:#c9d3d7}
+[data-theme="light"] .search-box input::placeholder{color:#7a868b}
+[data-theme="light"] .search-box kbd{color:#7a868b;border-color:#c9d3d7}
+[data-theme="light"] .mini-rank span{color:#2f7a4a}
+[data-theme="light"] .phone-thumb:after{background:linear-gradient(125deg,rgba(29,124,148,.08),transparent 50%)}
+[data-theme="light"] .new-tag{color:#b03a33}
+[data-theme="light"] .nav-dropdown{box-shadow:0 16px 40px rgba(20,30,35,.18)}
+[data-theme="light"] .nav-toggle{border-color:#c9d3d7}
